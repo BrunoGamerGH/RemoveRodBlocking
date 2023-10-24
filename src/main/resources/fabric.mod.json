@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "removerodblocking",
+  "version": "${version}",
+  "name": "RemoveRodBlocking",
+  "description": "I died in pvp because of this, so i made this out of rage",
+  "authors": ["Bruno"],
+  "contact": {
+    "sources": "https://github.com/BrunoGamerGH/RemoveRodBlocking",
+    "issues": "https://github.com/BrunoGamerGH/RemoveRodBlocking/issues"
+  },
+  "icon": "assets/removerodblocking/icon.png",
+  "license": "All-Rights-Reserved",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.bruno.removerodblocking.RemoveRodBlocking"
+    ]
+  },
+  "mixins": [
+    "removerodblocking.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
