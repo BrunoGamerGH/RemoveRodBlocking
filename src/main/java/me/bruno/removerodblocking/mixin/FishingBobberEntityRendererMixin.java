@@ -73,6 +73,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         vertex(vertexConsumer, matrix4f, matrix3f, i, 1.0f, 1, 1, 0);
         vertex(vertexConsumer, matrix4f, matrix3f, i, 0.0f, 1, 0, 0);
         stack.pop();
+        dispatcher.setRenderHitboxes(true);
     }
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/entity/projectile/FishingBobberEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", cancellable = true)
@@ -96,6 +97,8 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
             doTheThing(matrixStack, vertexConsumerProvider, i);
         } else if (!MinecraftClient.getInstance().player.getUuid().equals(player.getUuid())) {
             doTheThing(matrixStack, vertexConsumerProvider, i);
+        } else {
+            dispatcher.setRenderHitboxes(false);
         }
 
         int j = playerEntity.getMainArm() == Arm.RIGHT ? 1 : -1;
