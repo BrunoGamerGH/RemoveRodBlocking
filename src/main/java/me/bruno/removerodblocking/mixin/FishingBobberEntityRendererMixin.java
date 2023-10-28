@@ -17,10 +17,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
+
 import net.minecraft.util.math.Vec3d;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,7 +45,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
     }
 
     private static void vertex(VertexConsumer buffer, Matrix4f matrix, Matrix3f normalMatrix, int light, float x, int y, int u, int v) {
-        buffer.vertex(matrix, x - 0.5f, (float)y - 0.5f, 0.0f).color(255, 255, 255, 255).texture(u, v).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(normalMatrix, 0.0f, 1.0f, 0.0f).next();
+        buffer.vertex(matrix, x - 0.5F, (float)y - 0.5F, 0.0F).color(255, 255, 255, 255).texture((float)u, (float)v).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(normalMatrix, 0.0F, 1.0F, 0.0F).next();
     }
 
     private static void renderFishingLine(float x, float y, float z, VertexConsumer buffer, MatrixStack.Entry matrices, float segmentStart, float segmentEnd) {
@@ -63,7 +64,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
 
         stack.scale(0.5f, 0.5f, 0.5f);
         stack.multiply(this.dispatcher.getRotation());
-        stack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180.0f));
+        stack.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180.0f));
         MatrixStack.Entry entry = stack.peek();
         Matrix4f matrix4f = entry.getPositionMatrix();
         Matrix3f matrix3f = entry.getNormalMatrix();
@@ -73,6 +74,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         vertex(vertexConsumer, matrix4f, matrix3f, i, 1.0f, 1, 1, 0);
         vertex(vertexConsumer, matrix4f, matrix3f, i, 0.0f, 1, 0, 0);
         stack.pop();
+        dispatcher.setRenderHitboxes(true);
     }
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/entity/projectile/FishingBobberEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", cancellable = true)
@@ -96,6 +98,8 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
             doTheThing(matrixStack, vertexConsumerProvider, i);
         } else if (!MinecraftClient.getInstance().player.getUuid().equals(player.getUuid())) {
             doTheThing(matrixStack, vertexConsumerProvider, i);
+        } else {
+            dispatcher.setRenderHitboxes(false);
         }
 
         int j = playerEntity.getMainArm() == Arm.RIGHT ? 1 : -1;
