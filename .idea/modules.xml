@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.test.iml" filepath="$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.test.iml" filepath="$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.test.iml" />
     </modules>
   </component>
 </project>
