@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.iml" filepath="$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.test.iml" filepath="$PROJECT_DIR$/.idea/modules/RemoveRodBlocking.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.main.iml" filepath="$PROJECT_DIR$/.idea/modules/me.bruno.RemoveRodBlocking.main.iml" />
