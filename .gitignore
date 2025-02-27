@@ -4,3 +4,4 @@
 .idea
 /run/
 .idea/runConfigurations/Minecraft_Server.xml
+*.xml
