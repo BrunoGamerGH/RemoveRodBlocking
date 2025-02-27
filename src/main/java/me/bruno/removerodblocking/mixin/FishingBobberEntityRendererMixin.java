@@ -36,7 +36,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         i /= l;
         j /= l;
         k /= l;
-        buffer.vertex(matrices, f, g, h).color(0, 0, 0, 255).normal(matrices, i, j, k).next();
+        buffer.vertex(matrices, f, g, h).color(-16777216).normal(matrices, i, j, k);
     }
     private static float percentage(int value, int max) {
         return (float)value / (float)max;
@@ -45,8 +45,6 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
     protected FishingBobberEntityRendererMixin(EntityRendererFactory.Context ctx) {
         super(ctx);
     }
-
-
     private Vec3d getHandPos(PlayerEntity player, float f, float tickDelta) {
         int i = player.getMainArm() == Arm.RIGHT ? 1 : -1;
         ItemStack itemStack = player.getMainHandStack();
