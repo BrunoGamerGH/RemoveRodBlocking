@@ -1,7 +1,7 @@
 # Project exclude paths
 /.gradle/
 /build/
-.idea
+/.idea/
 /run/
 .idea/runConfigurations/Minecraft_Server.xml
 *.xml
