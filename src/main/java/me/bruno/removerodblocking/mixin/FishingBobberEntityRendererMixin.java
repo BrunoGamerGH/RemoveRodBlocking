@@ -3,7 +3,7 @@ package me.bruno.removerodblocking.mixin;
 import me.bruno.removerodblocking.FishingBobberEntityStateWithPlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -15,7 +15,6 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
-import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -54,12 +53,13 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
             float f = (float)fishingBobberEntityState.pos.x;
             float g = (float)fishingBobberEntityState.pos.y;
             float h = (float)fishingBobberEntityState.pos.z;
-            orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayer.getLines(), (entry, vertexConsumer) -> {
-                for(int j = 0; j < 16; ++j) {
-                    float k = percentage(j, 16);
-                    float l = percentage(j + 1, 16);
-                    renderFishingLine(f, g, h, vertexConsumer, entry, k, l);
-                    renderFishingLine(f, g, h, vertexConsumer, entry, l, k);
+            float i = MinecraftClient.getInstance().getWindow().getMinimumLineWidth();
+            orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayers.lines(), (matricesEntry, vertexConsumer) -> {
+                for(int k = 0; k < 16; ++k) {
+                    float l = percentage(k, 16);
+                    float m = percentage(k + 1, 16);
+                    renderFishingLine(f, g, h, vertexConsumer, matricesEntry, l, m, i);
+                    renderFishingLine(f, g, h, vertexConsumer, matricesEntry, m, l, i);
                 }
             });
             matrixStack.pop();
@@ -100,7 +100,7 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         return (float)value / max;
     }
 
-    private static void renderFishingLine(float x, float y, float z, VertexConsumer buffer, MatrixStack.Entry matrices, float segmentStart, float segmentEnd) {
+    private static void renderFishingLine(float x, float y, float z, VertexConsumer buffer, MatrixStack.Entry matrices, float segmentStart, float segmentEnd, float getMinimumLineWidth) {
         float f = x * segmentStart;
         float g = y * (segmentStart * segmentStart + segmentStart) * 0.5F + 0.25F;
         float h = z * segmentStart;
@@ -111,6 +111,6 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         i /= l;
         j /= l;
         k /= l;
-        buffer.vertex(matrices, f, g, h).color(Colors.BLACK).normal(matrices, i, j, k);
+        buffer.vertex(matrices, f, g, h).color(-16777216).normal(matrices, i, j, k).lineWidth(getMinimumLineWidth);
     }
 }
