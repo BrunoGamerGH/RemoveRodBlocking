@@ -3,7 +3,6 @@ package me.bruno.removerodblocking.mixin;
 import me.bruno.removerodblocking.FishingBobberEntityStateWithPlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.command.OrderedRenderCommandQueue;
@@ -19,7 +18,6 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,8 +30,6 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
 
 
     @Shadow protected abstract Vec3d getHandPos(PlayerEntity player, float f, float tickDelta);
-
-    @Shadow @Final private static RenderLayer LAYER;
 
     @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", cancellable = true)
     public void renderExceptInHead(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci){
