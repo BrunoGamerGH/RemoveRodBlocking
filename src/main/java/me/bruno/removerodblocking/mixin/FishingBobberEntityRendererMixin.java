@@ -3,13 +3,15 @@ package me.bruno.removerodblocking.mixin;
 import me.bruno.removerodblocking.FishingBobberEntityStateWithPlayer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.FishingBobberEntityRenderer;
 import net.minecraft.client.render.entity.state.FishingBobberEntityState;
+import net.minecraft.client.render.state.CameraRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -17,6 +19,7 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.util.Colors;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,8 +33,10 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
 
     @Shadow protected abstract Vec3d getHandPos(PlayerEntity player, float f, float tickDelta);
 
-    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V", cancellable = true)
-    public void renderExceptInHead(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci){
+    @Shadow @Final private static RenderLayer LAYER;
+
+    @Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/client/render/entity/state/FishingBobberEntityState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/command/OrderedRenderCommandQueue;Lnet/minecraft/client/render/state/CameraRenderState;)V", cancellable = true)
+    public void renderExceptInHead(FishingBobberEntityState fishingBobberEntityState, MatrixStack matrixStack, OrderedRenderCommandQueue orderedRenderCommandQueue, CameraRenderState cameraRenderState, CallbackInfo ci){
         if (fishingBobberEntityState instanceof FishingBobberEntityStateWithPlayer withPlayer) {
             Entity hooked = withPlayer.hooked;
 
@@ -49,15 +54,19 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
             }
 
             //render fishing line
+            matrixStack.push();
             float f = (float)fishingBobberEntityState.pos.x;
             float g = (float)fishingBobberEntityState.pos.y;
             float h = (float)fishingBobberEntityState.pos.z;
-            VertexConsumer vertexConsumer2 = vertexConsumerProvider.getBuffer(RenderLayer.getLineStrip());
-            MatrixStack.Entry entry2 = matrixStack.peek();
-
-            for (int k = 0; k <= 16; k++) {
-                renderFishingLine(f, g, h, vertexConsumer2, entry2, percentage(k, 16), percentage(k + 1, 16));
-            }
+            orderedRenderCommandQueue.submitCustom(matrixStack, RenderLayer.getLines(), (entry, vertexConsumer) -> {
+                for(int j = 0; j < 16; ++j) {
+                    float k = percentage(j, 16);
+                    float l = percentage(j + 1, 16);
+                    renderFishingLine(f, g, h, vertexConsumer, entry, k, l);
+                    renderFishingLine(f, g, h, vertexConsumer, entry, l, k);
+                }
+            });
+            matrixStack.pop();
             ci.cancel();
         }
     }
@@ -107,6 +116,9 @@ public abstract class FishingBobberEntityRendererMixin extends EntityRenderer<Fi
         j /= l;
         k /= l;
         buffer.vertex(matrices, f, g, h).color(Colors.BLACK).normal(matrices, i, j, k);
+    }
+    private static void vertex(VertexConsumer buffer, MatrixStack.Entry matrix, int light, float x, int y, int u, int v) {
+        buffer.vertex(matrix, x - 0.5F, (float)y - 0.5F, 0.0F).color(-1).texture((float)u, (float)v).overlay(OverlayTexture.DEFAULT_UV).light(light).normal(matrix, 0.0F, 1.0F, 0.0F);
     }
 
 }
